@@ -27,19 +27,52 @@ public class BootStrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Author eric = new Author("Eric", "Evans");
         Book ddd = new Book("Domain Driven Design", "123123");
-        Publisher aw = new Publisher("Addison-Wesley", new Address("75 Arlington Street Suite", "Boston",  "MA", "02116"));
+
+        Publisher aw = new Publisher();
+        aw.setName("Addison-Wesley");
+        aw.setAddressLine1("75 Arlington Street Suite");
+        aw.setCity("Boston");
+        aw.setState("MA");
+        aw.setZip("02116");
+
+        publisherRepository.save(aw);
+
         eric.getBooks().add(ddd);
         ddd.getAuthors().add(eric);
+
+        ddd.setPublisher(aw);
+        aw.getBooks().add(ddd);
 
         authorRepository.save(eric);
         bookRepository.save(ddd);
         publisherRepository.save(aw);
 
+        Author erich = new Author("Erich", "Gamma");
+        Book dp = new Book("Design Patterns: Elements of Reusuable Object-Oriented Software", "12345678765432");
+        erich.getBooks().add(dp);
+        dp.setPublisher(aw);
+        aw.getBooks().add(dp);
+
+        authorRepository.save(erich);
+        bookRepository.save(dp);
+        publisherRepository.save(aw);
+
         Author rod = new Author("Rod", "Johnson");
         Book noEJB = new Book("J2EE Development without EJB", "3939459459");
-        Publisher wrox = new Publisher("Wrox", new Address("111 River Street", "Hoboken", "NJ", "07030"));
+
+        Publisher wrox = new Publisher();
+        wrox.setName("Wrox");
+        wrox.setAddressLine1("111 River Street");
+        wrox.setCity("Hoboken");
+        wrox.setState("NJ");
+        wrox.setZip("07030");
+
+        publisherRepository.save(wrox);
+
         rod.getBooks().add(noEJB);
         noEJB.getAuthors().add(rod);
+        noEJB.setPublisher(wrox);
+        wrox.getBooks().add(noEJB);
 
         authorRepository.save(rod);
         bookRepository.save(noEJB);
@@ -47,7 +80,6 @@ public class BootStrapData implements CommandLineRunner {
 
         System.out.println("Started in Bootstrap");
         System.out.println("Number of Books: " + bookRepository.count());
-        System.out.println("Number of Publishers: " + publisherRepository.count());
-        System.out.println("Publishers called: " + publisherRepository.findAll());
+        System.out.println("Publisher " + aw.getName() + "Number of Books " + aw.getBooks().size());
     }
 }
